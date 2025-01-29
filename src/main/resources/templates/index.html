@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Library</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<h1>🎵 Music Library 🎵</h1>
+
+<div class="menu">
+    <button onclick="location.href='/album'">앨범 목록 (albumList)</button>
+    <button onclick="location.href='/song'">노래 목록 (songList)</button>
+    <button onclick="location.href='/album/insert'">앨범 추가</button>
+</div>
+
+<div class="input-container">
+    <label for="albumId">앨범 조회 (albumId 입력):</label>
+    <input type="number" id="albumId" placeholder="Album ID 입력">
+    <button onclick="viewAlbum()">조회</button>
+</div>
+
+<div class="input-container">
+    <label for="songId">노래 조회 (songId 입력):</label>
+    <input type="number" id="songId" placeholder="Song ID 입력">
+    <button onclick="viewSong()">조회</button>
+</div>
+
+<script>
+    function viewAlbum() {
+        let albumId = document.getElementById("albumId").value;
+        if (albumId) {
+            // 앨범 상세 페이지로 리디렉션
+            location.href = "/album/" + albumId;
+        } else {
+            alert("Album ID를 입력하세요!");
+        }
+    }
+
+    function viewSong() {
+        let songId = document.getElementById("songId").value;
+        if (songId) {
+            // 노래 상세 페이지로 리디렉션
+            location.href = "/song/" + songId;
+        } else {
+            alert("Song ID를 입력하세요!");
+        }
+    }
+</script>
+</body>
+</html>

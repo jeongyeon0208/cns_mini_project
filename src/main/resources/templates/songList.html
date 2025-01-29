@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>곡 목록</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<a href="/" class="home-button">홈으로</a>
+<body>
+<h2>곡 목록</h2>
+<table>
+  <thead>
+  <tr>
+    <th>곡 ID</th>
+    <th>곡명</th>
+    <th>장르</th>
+    <th>길이</th>
+    <th>아티스트</th>
+    <th>상세보기</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="song : ${songList}">
+    <td th:text="${song.songId}"></td>
+    <td th:text="${song.songName}"></td>
+    <td th:text="${song.songGenre}"></td>
+    <td th:text="${song.songLength}"></td>
+    <td th:text="${song.artist}"></td>
+    <td><a th:href="@{/song/{id}(id=${song.songId})}">보기</a></td>
+  </tr>
+  </tbody>
+</table>
+
+<a href="/album">앨범 목록으로</a>
+</body>
+</html>
