@@ -1,26 +1,30 @@
 package com.springmusic.service;
 
-import com.springmusic.dto.AlbumDto;
-import com.springmusic.dto.SongDto;
+import com.springmusic.domain.Album;
+import com.springmusic.dto.AlbumRequest;
+import com.springmusic.dto.AlbumResponse;
+import com.springmusic.dto.SongRequest;
+import com.springmusic.dto.SongResponse;
 
 import java.util.List;
 
 public interface MusicService {
 
-    List<AlbumDto> selectAlbumList();
-    AlbumDto selectAlbum(int albumId);
+    Long saveAlbum(AlbumRequest albumRequest);
+    void saveSong(SongRequest songRequest, Album album);
 
-    List<SongDto> selectSongs();
-    SongDto selectSong(int songId);
+    void addAlbumSong(Long albumId, SongRequest songRequest);
 
-    Long saveAlbum(AlbumDto albumDto);
-    Long saveSong(SongDto songDto);
+    List<AlbumResponse> selectAlbumList();
+    AlbumResponse selectAlbum(Long albumId);
+    List<SongResponse> selectSongList();
+    SongResponse selectSong(Long songId);
 
-    void updateAlbum(AlbumDto albumDto);
-    void updateSong(SongDto songDto);
+    void updateAlbum(Long albumId, AlbumRequest albumRequest);
+    void updateSong(Long songId, SongRequest songRequest);
 
-    void deleteAlbum(int albumId);
-    void deleteSong(int songId);
+    void deleteAlbum(Long albumId);
+    void deleteSong(Long songId);
 
 
 }

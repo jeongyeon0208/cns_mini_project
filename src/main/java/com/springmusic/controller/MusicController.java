@@ -1,93 +1,87 @@
 package com.springmusic.controller;
 
-import com.springmusic.dto.AlbumDto;
-import com.springmusic.dto.SongDto;
+import com.springmusic.dto.AlbumRequest;
+import com.springmusic.dto.AlbumResponse;
+import com.springmusic.dto.SongRequest;
+import com.springmusic.dto.SongResponse;
 import com.springmusic.service.MusicService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
 public class MusicController {
 
     @Autowired
     private MusicService musicService;
 
-    @GetMapping("/")
-    public ModelAndView index() {
-        return new ModelAndView("index");
-    }
-
-    @GetMapping("/album")
-    public ModelAndView getAlbums() {
-        ModelAndView mv = new ModelAndView("albumList");
-        mv.addObject("albumList", musicService.selectAlbumList());
-        return mv;
-    }
-
-    @GetMapping("/album/{albumId}")
-    public ModelAndView getAlbum(@PathVariable int albumId) {
-        ModelAndView mv = new ModelAndView("album");
-        mv.addObject("album", musicService.selectAlbum(albumId));
-        return mv;
-    }
-
-    @GetMapping("/song")
-    public ModelAndView getSongs() {
-        ModelAndView mv = new ModelAndView("songList");
-        mv.addObject("songList", musicService.selectSongs());
-        return mv;
-    }
-
-    @GetMapping("/song/{songId}")
-    public ModelAndView getSong(@PathVariable int songId) {
-        ModelAndView mv = new ModelAndView("song");
-        mv.addObject("song", musicService.selectSong(songId));
-        return mv;
-    }
-
-    @PostMapping("/album/insert")
-    public String saveAlbum(AlbumDto albumDto) {
-        Long albumId = musicService.saveAlbum(albumDto);
-        return "redirect:/album/" + albumId;
-    }
-
-    @GetMapping("/album/insert")
-    public String albumInsertForm() {
-        return "albumInsert";
-    }
-
-    @PostMapping("/album/update/{albumId}")
-    public String updateAlbum(@PathVariable int albumId, AlbumDto albumDto) {
-        musicService.updateAlbum(albumDto);
-        return "redirect:/album/" + albumId;
-    }
-
-    @PostMapping("/song/update/{songId}")
-    public String updateSong(@PathVariable int songId, SongDto songDto) {
-        musicService.updateSong(songDto);
-        return "redirect:/song/" + songId;
-    }
-
-    @PostMapping("/album/delete/{albumId}")
-    public String deleteAlbum(@PathVariable int albumId) {
-        musicService.deleteAlbum(albumId);
-        return "redirect:/album";
-    }
-
-    @PostMapping("/song/delete/{songId}")
-    public String deleteSong(@PathVariable int songId) {
-        musicService.deleteSong(songId);
-        return "redirect:/song";
+    @PostMapping("/album")
+    @Operation(summary = "새 앨범 저장", description = "새 앨범 저장")
+    public ResponseEntity<?> saveAlbum(@RequestBody AlbumRequest albumRequest) {
+        Long albumId = musicService.saveAlbum(albumRequest);
+        return ResponseEntity.ok(albumId);
     }
 
     @PostMapping("/song")
-    public String saveSong(SongDto songDto) {
-        musicService.saveSong(songDto);
-        return "redirect:/song";
+    @Operation(summary = "앨범에 추가할 노래 저장", description = "노래 저장")
+    public ResponseEntity<?> addAlbumSong(@Param("albumId") Long albumId,
+                                      @RequestBody SongRequest songRequest) {
+        musicService.addAlbumSong(albumId, songRequest);
+        return ResponseEntity.ok("노래 추가 완료");
     }
+
+    @GetMapping("/album")
+    @Operation(summary = "전체 앨범 리스트 조회", description = "앨범 리스트 조회")
+    public ResponseEntity<?> getAlbums() {
+        List<AlbumResponse> albumResponses = musicService.selectAlbumList();
+        return ResponseEntity.ok(albumResponses);
+    }
+
+    @GetMapping("/album/{albumId}")
+    public ResponseEntity<?> getAlbum(@PathVariable Long albumId) {
+        AlbumResponse albumResponse = musicService.selectAlbum(albumId);
+        return ResponseEntity.ok(albumResponse);
+    }
+
+    @GetMapping("/song")
+    public ResponseEntity<?> getSongs() {
+        List<SongResponse> songResponses = musicService.selectSongList();
+        return ResponseEntity.ok(songResponses);
+    }
+
+    @GetMapping("/song/{songId}")
+    public ResponseEntity<?> getSong(@PathVariable Long songId) {
+        return ResponseEntity.ok(musicService.selectSong(songId));
+    }
+
+
+    @PatchMapping("/album/{albumId}")
+    public ResponseEntity<?> updateAlbum(@PathVariable Long albumId, AlbumRequest albumRequest) {
+        musicService.updateAlbum(albumId, albumRequest);
+        return ResponseEntity.ok("앨범 수정 완료");
+    }
+
+    @PatchMapping("/song/{songId}")
+    public ResponseEntity<?> updateSong(@PathVariable Long songId, SongRequest songRequest) {
+        musicService.updateSong(songId, songRequest);
+        return ResponseEntity.ok("노래 수정 완료");
+    }
+
+    @DeleteMapping("/album/{albumId}")
+    public ResponseEntity<?> deleteAlbum(@PathVariable Long albumId) {
+        musicService.deleteAlbum(albumId);
+        return ResponseEntity.ok("앨범 삭제 완료");
+    }
+
+    @DeleteMapping("/song/{songId}")
+    public ResponseEntity<?> deleteSong(@PathVariable Long songId) {
+        musicService.deleteSong(songId);
+        return ResponseEntity.ok("노래 삭제 완료");
+    }
+
 
 }
